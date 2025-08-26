@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Food Redistribution Platform{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Hero Section -->
+    <div class="col-12">
+        <div class="jumbotron bg-primary text-white rounded p-5 mb-5">
+            <div class="container text-center">
+                <h1 class="display-4">
+                    <i data-feather="heart" class="me-3"></i>
+                    Welcome to FoodShare
+                </h1>
+                <p class="lead">Connecting restaurants, citizens, NGOs, and drivers to reduce food waste and fight hunger in our communities.</p>
+                {% if not current_user.is_authenticated %}
+                    <a class="btn btn-light btn-lg me-3" href="{{ url_for('register') }}">
+                        <i data-feather="user-plus"></i> Join Our Mission
+                    </a>
+                    <a class="btn btn-outline-light btn-lg" href="{{ url_for('login') }}">
+                        <i data-feather="log-in"></i> Login
+                    </a>
+                {% else %}
+                    <a class="btn btn-light btn-lg" href="{{ url_for('dashboard') }}">
+                        <i data-feather="layout"></i> Go to Dashboard
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Platform Statistics -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4">Platform Impact</h2>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card bg-success text-white text-center">
+            <div class="card-body">
+                <i data-feather="package" size="48"></i>
+                <h3 class="mt-2">{{ stats.total_donations }}</h3>
+                <p class="card-text">Total Donations</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card bg-info text-white text-center">
+            <div class="card-body">
+                <i data-feather="check-circle" size="48"></i>
+                <h3 class="mt-2">{{ stats.delivered_donations }}</h3>
+                <p class="card-text">Delivered</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card bg-warning text-white text-center">
+            <div class="card-body">
+                <i data-feather="clock" size="48"></i>
+                <h3 class="mt-2">{{ stats.pending_donations }}</h3>
+                <p class="card-text">Pending</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card bg-secondary text-white text-center">
+            <div class="card-body">
+                <i data-feather="users" size="48"></i>
+                <h3 class="mt-2">{{ stats.total_users }}</h3>
+                <p class="card-text">Community Members</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4">How It Works</h2>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i data-feather="plus-circle" size="48" class="text-primary mb-3"></i>
+                <h5 class="card-title">1. Donate Food</h5>
+                <p class="card-text">Restaurants and citizens add surplus food donations with details about quantity, type, and pickup location.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i data-feather="search" size="48" class="text-success mb-3"></i>
+                <h5 class="card-title">2. NGOs Claim</h5>
+                <p class="card-text">NGOs browse available donations and claim items that match their distribution needs.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i data-feather="truck" size="48" class="text-warning mb-3"></i>
+                <h5 class="card-title">3. Driver Pickup</h5>
+                <p class="card-text">Volunteer drivers assign themselves to deliveries and transport food from donors to NGOs.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i data-feather="heart" size="48" class="text-danger mb-3"></i>
+                <h5 class="card-title">4. Impact Created</h5>
+                <p class="card-text">Food reaches those in need, reducing waste and creating positive community impact.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- User Roles -->
+<div class="row">
+    <div class="col-12">
+        <h2 class="text-center mb-4">Join as</h2>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <i data-feather="home" size="36" class="text-primary mb-2"></i>
+                <h5 class="card-title">Restaurant</h5>
+                <p class="card-text">Donate surplus prepared food and help reduce waste.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <i data-feather="user" size="36" class="text-success mb-2"></i>
+                <h5 class="card-title">Citizen</h5>
+                <p class="card-text">Share excess food from events or home cooking.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <i data-feather="shield" size="36" class="text-info mb-2"></i>
+                <h5 class="card-title">NGO</h5>
+                <p class="card-text">Claim donations to distribute to those in need.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <i data-feather="truck" size="36" class="text-warning mb-2"></i>
+                <h5 class="card-title">Driver</h5>
+                <p class="card-text">Volunteer to transport food from donors to NGOs.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    feather.replace();
+</script>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Available Donations - Food Redistribution Platform{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2>
+            <i data-feather="search"></i>
+            Available Donations
+        </h2>
+        <p class="text-muted">Browse and claim food donations for your organization</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        {% if donations %}
+            <div class="row">
+                {% for donation in donations %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary">{{ donation.food_type.replace('_', ' ').title() }}</span>
+                                <small class="text-muted">{{ donation.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i data-feather="package"></i>
+                                    {{ donation.quantity }} Servings
+                                </h5>
+                                <p class="card-text">{{ donation.description }}</p>
+                                
+                                <div class="mb-2">
+                                    <strong><i data-feather="map-pin"></i> Location:</strong><br>
+                                    <small class="text-muted">{{ donation.location }}</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <strong><i data-feather="user"></i> Donor:</strong> {{ donation.donor_name }}<br>
+                                    <strong><i data-feather="phone"></i> Contact:</strong> {{ donation.contact_phone }}
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{{ url_for('claim_donation', donation_id=donation.id) }}" 
+                                   class="btn btn-primary w-100">
+                                    <i data-feather="check"></i> Claim Donation
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i data-feather="search" size="72" class="text-muted mb-4"></i>
+                    <h3>No Available Donations</h3>
+                    <p class="text-muted mb-4">
+                        There are currently no food donations available for claiming. 
+                        Check back later as new donations are added regularly.
+                    </p>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                        <i data-feather="arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if donations %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h5><i data-feather="info"></i> How to Claim Donations</h5>
+                <ol class="mb-0">
+                    <li>Review the donation details including food type, quantity, and location</li>
+                    <li>Click "Claim Donation" to reserve it for your organization</li>
+                    <li>A volunteer driver will be assigned to pick up and deliver the food</li>
+                    <li>Coordinate with the donor using the provided contact information</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    feather.replace();
+</script>
+{% endblock %}

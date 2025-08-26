@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}Impact Dashboard - Food Redistribution Platform{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2>
+            <i data-feather="bar-chart-2"></i>
+            Impact Dashboard
+        </h2>
+        <p class="text-muted">Track the positive impact we're making together</p>
+    </div>
+</div>
+
+<!-- Platform-wide Statistics -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h4>Platform Overview</h4>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card bg-success text-white text-center">
+            <div class="card-body">
+                <i data-feather="package" size="48"></i>
+                <h3 class="mt-2">{{ stats.total_donations }}</h3>
+                <p class="card-text">Total Donations</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card bg-info text-white text-center">
+            <div class="card-body">
+                <i data-feather="check-circle" size="48"></i>
+                <h3 class="mt-2">{{ stats.delivered_donations }}</h3>
+                <p class="card-text">Successfully Delivered</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card bg-warning text-white text-center">
+            <div class="card-body">
+                <i data-feather="clock" size="48"></i>
+                <h3 class="mt-2">{{ stats.pending_donations }}</h3>
+                <p class="card-text">Pending Donations</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card bg-secondary text-white text-center">
+            <div class="card-body">
+                <i data-feather="users" size="48"></i>
+                <h3 class="mt-2">{{ stats.total_users }}</h3>
+                <p class="card-text">Community Members</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row mb-5">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i data-feather="pie-chart"></i> Donation Status Distribution</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="donationStatusChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i data-feather="users"></i> Community Composition</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="userRoleChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- User-specific Statistics -->
+{% if current_user.role in ['restaurant', 'citizen'] %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4>Your Donation Impact</h4>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <i data-feather="upload" size="36" class="text-primary mb-2"></i>
+                    <h4>{{ user_stats.total_donations or 0 }}</h4>
+                    <p class="card-text">Total Donations</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <i data-feather="check-circle" size="36" class="text-success mb-2"></i>
+                    <h4>{{ user_stats.delivered_donations or 0 }}</h4>
+                    <p class="card-text">Successfully Delivered</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <i data-feather="clock" size="36" class="text-info mb-2"></i>
+                    <h4>{{ user_stats.claimed_donations or 0 }}</h4>
+                    <p class="card-text">Awaiting Delivery</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <i data-feather="package" size="36" class="text-warning mb-2"></i>
+                    <h4>{{ user_stats.pending_donations or 0 }}</h4>
+                    <p class="card-text">Pending Claims</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% elif current_user.role == 'ngo' %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4>Your Organization's Impact</h4>
+        </div>
+        <div class="col-md-4 col-sm-6 mb-3">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <i data-feather="download" size="36" class="text-primary mb-2"></i>
+                    <h4>{{ user_stats.total_claimed or 0 }}</h4>
+                    <p class="card-text">Total Claims</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6 mb-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <i data-feather="check-circle" size="36" class="text-success mb-2"></i>
+                    <h4>{{ user_stats.delivered_donations or 0 }}</h4>
+                    <p class="card-text">Successfully Received</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6 mb-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <i data-feather="truck" size="36" class="text-warning mb-2"></i>
+                    <h4>{{ user_stats.pending_deliveries or 0 }}</h4>
+                    <p class="card-text">Awaiting Pickup</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% elif current_user.role == 'driver' %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4>Your Delivery Impact</h4>
+        </div>
+        <div class="col-md-4 col-sm-6 mb-3">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <i data-feather="truck" size="36" class="text-primary mb-2"></i>
+                    <h4>{{ user_stats.total_deliveries or 0 }}</h4>
+                    <p class="card-text">Total Assignments</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6 mb-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <i data-feather="check-circle" size="36" class="text-success mb-2"></i>
+                    <h4>{{ user_stats.completed_deliveries or 0 }}</h4>
+                    <p class="card-text">Completed Deliveries</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6 mb-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <i data-feather="clock" size="36" class="text-warning mb-2"></i>
+                    <h4>{{ user_stats.pending_deliveries or 0 }}</h4>
+                    <p class="card-text">Pending Deliveries</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<!-- Impact Message -->
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center py-4">
+                <h3><i data-feather="heart"></i> Together We Make a Difference</h3>
+                <p class="lead mb-0">
+                    Through {{ stats.total_donations }} donations and {{ stats.delivered_donations }} successful deliveries, 
+                    our community has helped reduce food waste and fight hunger. Every donation, claim, and delivery 
+                    creates positive impact in our neighborhoods.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    feather.replace();
+
+    // Donation Status Chart
+    const donationStatusCtx = document.getElementById('donationStatusChart').getContext('2d');
+    const donationStatusChart = new Chart(donationStatusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Delivered', 'Claimed', 'Pending'],
+            datasets: [{
+                data: [{{ stats.delivered_donations }}, {{ stats.claimed_donations }}, {{ stats.pending_donations }}],
+                backgroundColor: ['#198754', '#0dcaf0', '#ffc107'],
+                borderWidth: 2,
+                borderColor: '#495057'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#adb5bd'
+                    }
+                }
+            }
+        }
+    });
+
+    // User Role Chart
+    const userRoleCtx = document.getElementById('userRoleChart').getContext('2d');
+    const userRoleChart = new Chart(userRoleCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Restaurants', 'Citizens', 'NGOs', 'Drivers'],
+            datasets: [{
+                label: 'Number of Users',
+                data: [{{ stats.restaurants }}, {{ stats.citizens }}, {{ stats.ngos }}, {{ stats.drivers }}],
+                backgroundColor: ['#0d6efd', '#198754', '#0dcaf0', '#ffc107'],
+                borderWidth: 1,
+                borderColor: '#495057'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#adb5bd'
+                    },
+                    grid: {
+                        color: '#495057'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#adb5bd'
+                    },
+                    grid: {
+                        color: '#495057'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
