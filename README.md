@@ -22,4 +22,4 @@ This is not just a donation platform, but a *community collaboration system* for
 - *Frontend:* HTML, CSS, Bootstrap  
 - *Database:* SQLite (can be upgraded to PostgreSQL/MySQL)  
 - *Authentication:* Flask-Login, Flask-WTF  
-- *Deployment:* Render / Heroku / Railway  
+- *Deployment:* Render / Heroku / Railway
